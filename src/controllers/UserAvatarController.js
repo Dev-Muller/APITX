@@ -15,9 +15,9 @@ class UserAvatarController {
       where: { id: user_id }
     });
 
-    if (!user) {
-      throw new AppError("Somente usuários autenticados podem mudar o avatar", 401);
-    }
+    // if (!user) {
+    //   throw new AppError("Somente usuários autenticados podem mudar o avatar", 401);
+    // }
 
     if (user.avatar) {
       await diskStorage.deleteFile(user.avatar);
