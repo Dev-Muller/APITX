@@ -1,6 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
 const DiskStorage = require("../providers/DiskStorage");
-const AppError = require("../errors/AppError");
 
 const prisma = new PrismaClient();
 
@@ -14,10 +13,6 @@ class UserAvatarController {
     const user = await prisma.user.findUnique({
       where: { id: user_id }
     });
-
-    // if (!user) {
-    //   throw new AppError("Somente usuários autenticados podem mudar o avatar", 401);
-    // }
 
     if (user.avatar) {
       await diskStorage.deleteFile(user.avatar);
