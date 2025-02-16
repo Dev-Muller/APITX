@@ -1,5 +1,8 @@
-const knex = require("../database/connection");
+const { PrismaClient } = require('@prisma/client');
 const DiskStorage = require("../providers/DiskStorage");
+const AppError = require("../errors/AppError");
+
+const prisma = new PrismaClient();
 
 class UserAvatarController {
   async update(request, response) {
@@ -8,7 +11,9 @@ class UserAvatarController {
 
     const diskStorage = new DiskStorage();
 
-    const user = await knex("users").where({ id: user_id }).first();
+    const user = await prisma.user.findUnique({
+      where: { id: user_id }
+    });
 
     if (!user) {
       throw new AppError("Somente usuários autenticados podem mudar o avatar", 401);
@@ -21,7 +26,10 @@ class UserAvatarController {
     const filename = await diskStorage.saveFile(avatarFilename);
     user.avatar = filename;
 
-    await knex("users").where({ id: user_id }).update(user);
+    await prisma.user.update({
+      where: { id: user_id },
+      data: { avatar: filename }
+    });
 
     return response.json(user);
   }
