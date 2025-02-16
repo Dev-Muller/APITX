@@ -1,7 +1,8 @@
 const knex = require("../database/connection");
 const { hash, compare } = require("bcryptjs");
 const AppError = require("../utils/AppError");
-const prisma = require('../database/prisma');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 class UsersController {
   async create(request, response) {
