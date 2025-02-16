@@ -13,9 +13,7 @@ class UserRefreshToken {
     if (!refresh_token) {
       throw new AppError("Informe o token de autenticação.", 401);
     }
-    console.log(refresh_token);
     
-
     const refreshToken = await prisma.refreshToken.findUnique({
       where: { refreshToken },
     });

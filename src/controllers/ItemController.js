@@ -30,8 +30,8 @@ class ItemController {
       data: {
         name,
         group,
-        series,
-        repetitions,
+        series: typeof series === 'number' ? series : parseInt(series),
+        repetitions: typeof repetitions === 'number' ? repetitions : parseInt(repetitions),
         location,
       },
     });
