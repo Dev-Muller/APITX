@@ -38,7 +38,7 @@ class UsersController {
     const { id } = request.params;
 
     const user = await prisma.user.findUnique({
-      where: { id }
+      where: { id: Number(id) }
     });
 
     if (!user) {
@@ -48,7 +48,7 @@ class UsersController {
     const hashedPassword = await hash(password, 8);
 
     await prisma.user.update({
-      where: { id },
+      where: { id: Number(id) },
       data: {
         name,
         password: hashedPassword
