@@ -5,26 +5,26 @@ const prisma = new PrismaClient();
 
 class UserAvatarController {
   async update(request, response) {
-    const user_id = request.user.id;
-    const avatarFilename = request.file.filename;
-
-    console.log("User Avatar Update", user_id);
+    const file = request.file;
+    const { id } = request.params;
 
     const diskStorage = new DiskStorage();
 
     const user = await prisma.user.findUnique({
-      where: { id: user_id }
+      where: { id: Number(id) }
     });
 
     if (user.avatar) {
       await diskStorage.deleteFile(user.avatar);
     }
 
-    const filename = await diskStorage.saveFile(avatarFilename);
+    const filename = await diskStorage.saveFile(file.path);
+    console.log(filename);
+    
     user.avatar = filename;
 
     await prisma.user.update({
-      where: { id: user_id },
+      where: { id: Number(id) },
       data: { avatar: filename }
     });
 
