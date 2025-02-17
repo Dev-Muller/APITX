@@ -8,6 +8,8 @@ class UserAvatarController {
     const user_id = request.user.id;
     const avatarFilename = request.file.filename;
 
+    console.log("User Avatar Update", user_id);
+
     const diskStorage = new DiskStorage();
 
     const user = await prisma.user.findUnique({
