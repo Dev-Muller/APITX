@@ -34,49 +34,27 @@ class UsersController {
   }
 
   async update(request, response) {
-    const { name, password, oldPassword } = request.body;
-    const user_id = request.user.id;
-
-    console.log("User Controller Update", user_id);
+    const { id, password, name } = request.body;
 
     const user = await prisma.user.findUnique({
-      where: { id: user_id }
+      where: { id }
     });
 
     if (!user) {
       throw new AppError("Usuário não encontrado", 404);
     }
 
-    user.name = name ?? user.name;
-
-    if (password && !oldPassword) {
-      throw new AppError(
-        "Você precisa informar a senha antiga para definir a nova senha.",
-      );
-    }
-
-    if (!password && oldPassword) {
-      throw new AppError(
-        "Informe a nova senha.",
-      );
-    }
-
-    if (password && oldPassword) {
-      const checkOldPassword = await compare(oldPassword, user.password);
-
-      if (!checkOldPassword) {
-        throw new AppError("A senha antiga não confere.");
-      }
-
-      user.password = await hash(password, 8);
-    }
+    const hashedPassword = await hash(password, 8);
 
     await prisma.user.update({
-      where: { id: user_id },
-      data: user
+      where: { id },
+      data: {
+        name,
+        password: hashedPassword
+      }
     });
 
-    return response.json();
+    return response.json({ message: "Usuário atualizado com sucesso." });
   }
 }
 
